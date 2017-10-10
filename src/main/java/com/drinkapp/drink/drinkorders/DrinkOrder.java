@@ -10,8 +10,13 @@ public class DrinkOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
 
+    public String drinkName;
 
+    public String drinkGlass;
 
+    public String drinkIngredients;
+
+    @ManyToMany
 //    This would keep track of all items the customer creates when sending order
     public List<DrinkOrder> allDrinkOrders;
 
