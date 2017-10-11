@@ -16,8 +16,8 @@ public class DrinkOrder {
 
     public String drinkIngredients;
 
-    @ManyToMany
 //    This would keep track of all items the customer creates when sending order
+    @ManyToMany
     public List<DrinkOrder> allDrinkOrders;
 
 

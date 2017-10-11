@@ -20,6 +20,9 @@ public class Customer {
     private String email;
 
     @Column
+    public String username;
+
+    @Column
     private String password;
 
     @Column
@@ -28,10 +31,11 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, String email, String password, String dob) {
+    public Customer(String firstName, String lastName, String email, String username, String password, String dob) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.dob = dob;
     }
@@ -74,6 +78,14 @@ public class Customer {
 
     public void setDob(String dob) {
         this.dob = dob;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
