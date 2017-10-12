@@ -1,16 +1,12 @@
 package com.drinkapp.drink.barapp;
 
 import com.drinkapp.drink.customerapp.CustomerRepository;
-import com.drinkapp.drink.drinkorders.DrinkOrder;
-import com.drinkapp.drink.drinkorders.DrinkOrderRepository;
+import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("api/bar")
@@ -47,7 +43,8 @@ public class BartenderController {
         System.out.println(bartender);
 
         String username = bartender.getUsername();
-        String passwordHash = BCrypt.hashpw(BCrypt.gensalt(12), (bartender.getPassword()));
+//        String passwordHash = BCrypt.hashpw(BCrypt.gensalt(12), (bartender.getPassword()));
+        String passwordHash = bartender.getPassword();
 
         Bartender createNewBartender = new Bartender();
 

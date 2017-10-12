@@ -3,11 +3,18 @@ package com.drinkapp.drink.customerapp;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name="customers")
 public class Customer {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OneToMany
     private int id;
 
     @Column
