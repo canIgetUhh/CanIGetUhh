@@ -1,51 +1,71 @@
 package com.drinkapp.drink.customerapp;
 
+import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("api/customer")
 public class CustomerController {
 
+    @Autowired
+    CustomerRepository customerRepository;
 
-    @RestController
-    public String login() {
-        return "login";
-    }    @RequestMapping(path = "api/login", method = RequestMethod.GET)   ///you could also just say @GetMapping
+    @Autowired
+    DrinkOrderRepository drinkOrderRepository;
 
+    @PostMapping("/login")
+    public String customerLogIn (@RequestBody Customer customer, HttpSession session){
+//        would I find customer id by hashcode or by equals
+        System.out.println(customer.getUsername());
+        System.out.println(customer.getPassword());
 
-    @RequestMapping(path = "api/signUp", method = RequestMethod.POST)    ///you could also just say @PostMapping
-    public String signUp;
-        return "signUp";
+        Optional<Customer> findCustomer = customerRepository.findById(0);
+        if (!findCustomer.isPresent()){
+            return "That's not a user in our list";
+        }
+        Customer currentCustomer = findCustomer.get();
+//        boolean isCorrectPassword = BCrypt.checkpw(customer.getPassword(), currentCustomer.getPassword());
+        boolean isCorrectPassword = customer.getPassword() == currentCustomer.getPassword();
+        if (isCorrectPassword){
+            session.setAttribute("customerId", findCustomer.hashCode());
+            System.out.println(customer);
 
+            return "Customer is successfully logged in";
+        }
+        return "No user/password combination exists in our system";
+    }
 
-    @RequestMapping( path = "api/drinkMenu", method = RequestMethod.GET)
-        public String drinkMenu;
-        return drinkMenu;
+    @PostMapping("/signUp")
+    public String customerSignUp (@RequestBody Customer customer){
 
-    @RequestMapping (path = "api/reviewOrder/:drinkOrderID", method = RequestMethod.POST)
-    public String drinkOrderID;
-    return drinkOrderID;
+        System.out.println(customer);
 
+        String firstName = customer.getFirstName();
+        String lastName = customer.getLastName();
+        String email = customer.getEmail();
+        String username = customer.getUsername();
+//        String passwordHash = BCrypt.hashpw(BCrypt.gensalt(12), (customer.getPassword()));
+        String passwordHash = customer.getPassword();
+        String dob = customer.getDob();
 
-    @RequestMapping (path = "api/drinkOrderID/:status")
-        public String status;
-        return status;
+        Customer createNewCustomer = new Customer();
 
+        createNewCustomer.setFirstName(firstName);
+        createNewCustomer.setLastName(lastName);
+        createNewCustomer.setEmail(email);
+        createNewCustomer.setUsername(username);
+        createNewCustomer.setPassword(passwordHash);
+        createNewCustomer.setDob(dob);
 
+        customerRepository.save(createNewCustomer);
 
-
+        return "new user was created";
+    }
 }
-
-
-
- ///drink menu   api/drinkmenu
- //review order / :drink order id        api/:drinkorderid
-// timeline/ status       api/ drinkorderID/:status
-
-
-
-
-//    @RequestMapping(path = "/login", method = RequestMethod.GET)
-//    public String login () {
-//        return "login";
-//    }
