@@ -3,7 +3,7 @@ package com.drinkapp.drink.barapp;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name="bartenders")
 public class Bartender {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,5 +61,13 @@ public class Bartender {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
