@@ -7,7 +7,6 @@ import com.drinkapp.drink.drinks.Drink;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="drinkorders")
@@ -76,5 +75,16 @@ public class DrinkOrder {
 
     public void setDrinks(ArrayList<Drink> drinks) {
         this.drinks = drinks;
+    }
+
+    @Override
+    public String toString() {
+        return "DrinkOrder{" +
+                "orderId=" + orderId +
+                ", customer=" + customer +
+                ", bartender=" + bartender +
+                ", drinks=" + drinks +
+                ", status=" + status +
+                '}';
     }
 }

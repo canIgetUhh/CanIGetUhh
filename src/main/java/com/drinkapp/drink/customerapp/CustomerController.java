@@ -1,13 +1,14 @@
 package com.drinkapp.drink.customerapp;
 
+import com.drinkapp.drink.Status;
+import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
+import com.drinkapp.drink.drinks.Drink;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,11 +23,10 @@ public class CustomerController {
 
     @PostMapping("/login")
     public String customerLogIn (@RequestBody Customer customer, HttpSession session){
-//        would I find customer id by hashcode or by equals
         System.out.println(customer.getUsername());
         System.out.println(customer.getPassword());
 
-        Optional<Customer> findCustomer = customerRepository.findById(0);
+        Optional<Customer> findCustomer = customerRepository.getByUserName(customer.getUsername());
         if (!findCustomer.isPresent()){
             return "That's not a user in our list";
         }
@@ -42,7 +42,7 @@ public class CustomerController {
         return "No user/password combination exists in our system";
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public String customerSignUp (@RequestBody Customer customer){
 
         System.out.println(customer);
@@ -67,5 +67,46 @@ public class CustomerController {
         customerRepository.save(createNewCustomer);
 
         return "new user was created";
+    }
+
+    @GetMapping("/drink_menu")
+    public Drink drinkMenu (Drink allDrinks){
+//        shows list of all drinks available to select
+
+
+        return allDrinks;
+    }
+
+    @PostMapping("/drink_menu")
+    public Drink addDrinkToCart (Drink drink, List<DrinkOrder> newDrinks){
+//        create a new drinkOrder, allow to add multiple drinks into cart, set status as initial
+        DrinkOrder newDrinkOrder = new DrinkOrder();
+
+        newDrinkOrder.setStatus(Status.INITIAL);
+        newDrinks.add(newDrinkOrder);
+
+        return newDrinkOrder;
+    }
+
+    @GetMapping("/drink_order/:orderId")
+    public DrinkOrder drinkOrder (DrinkOrder drinkOrder){
+//      shows individual drinkOrder and the items in the drinkOrder
+
+        DrinkOrder currentDrinkOrder = drinkOrderRepository.getById(drinkOrder.getOrderId());
+
+        return currentDrinkOrder;
+    }
+
+    @GetMapping("/timeline/:orderId/:status")
+    public String drinkTimeline (DrinkOrder drinkOrder){
+//        should change whenever bartender pushes button to move the statuses
+
+        if (drinkOrder.getStatus() == Status.IN_PROGRESS){
+            return "Bartender is currently working on your drink order";
+        }
+        if (drinkOrder.getStatus() == Status.COMPLETE){
+            return "Bartender has completed your order! Please show your ID to the bartender";
+        }
+        return "Your Drink Order has been received by the bartender";
     }
 }
