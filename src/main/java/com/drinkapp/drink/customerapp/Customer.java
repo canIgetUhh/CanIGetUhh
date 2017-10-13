@@ -3,7 +3,7 @@ package com.drinkapp.drink.customerapp;
 import javax.persistence.*;
 
 @Entity
-@Table(name="customers")
+@Table(name = "customers")
 public class Customer {
     public int getId() {
         return id;
@@ -117,6 +117,7 @@ public class Customer {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", dob='" + dob + '\'' +
                 '}';

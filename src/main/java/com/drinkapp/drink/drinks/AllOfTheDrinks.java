@@ -6,30 +6,29 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RandomDrinkResponse {
+public class AllOfTheDrinks {
 
-    //Not sure whether to change this to "type" or leave it the same
-    private List<Value> drinks;
+    private List<Drink> drinks;
 
     @Override
     public String toString() {
         String drinksList = "";
-        for (Value drink : drinks) {
+        for (Drink drink : drinks) {
             drinksList += drink.getStrDrink() + ": " + drink.getIdDrink();
         }
-        return "RandomDrinkResponse{" +
+        return "AllOfTheDrinks{" +
                 "drinks=" + drinksList +
                 '}';
     }
 
-    public RandomDrinkResponse() {
+    public AllOfTheDrinks() {
     }
 
-    public List<Value> getDrinks() {
+    public List<Drink> getDrinks() {
         return drinks;
     }
 
-    public void setDrinks(List<Value> drinks) {
+    public void setDrinks(List<Drink> drinks) {
         this.drinks = drinks;
     }
 }

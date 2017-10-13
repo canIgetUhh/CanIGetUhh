@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 
 @Entity
-@Table(name="drinkorders")
+@Table(name = "drinkorders")
 public class DrinkOrder {
 
     @Id

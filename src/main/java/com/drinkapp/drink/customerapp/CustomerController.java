@@ -3,11 +3,15 @@ package com.drinkapp.drink.customerapp;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
+import com.drinkapp.drink.drinks.AllOfTheDrinks;
 import com.drinkapp.drink.drinks.Drink;
+import com.drinkapp.drink.drinks.DrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,12 +25,15 @@ public class CustomerController {
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
 
+    @Autowired
+    DrinkRepository drinkRepository;
+
     @PostMapping("/login")
     public String customerLogIn (@RequestBody Customer customer, HttpSession session){
         System.out.println(customer.getUsername());
         System.out.println(customer.getPassword());
 
-        Optional<Customer> findCustomer = customerRepository.getByUserName(customer.getUsername());
+        Optional<Customer> findCustomer = customerRepository.getByUsername(customer.getUsername());
         if (!findCustomer.isPresent()){
             return "That's not a user in our list";
         }
@@ -69,37 +76,73 @@ public class CustomerController {
         return "new user was created";
     }
 
+
     @GetMapping("/drink_menu")
-    public Drink drinkMenu (Drink allDrinks){
+    public List<Drink> drinkMenu (AllOfTheDrinks allDrinks){
 //        shows list of all drinks available to select
+        RestTemplate restTemplate = new RestTemplate();
 
+        restTemplate.getForObject()
 
-        return allDrinks;
+       List<Drink> Drinks = allDrinks.getDrinks();
+
+        return Drinks;
     }
 
-    @PostMapping("/drink_menu")
-    public Drink addDrinkToCart (Drink drink, List<DrinkOrder> newDrinks){
-//        create a new drinkOrder, allow to add multiple drinks into cart, set status as initial
-        DrinkOrder newDrinkOrder = new DrinkOrder();
+    @GetMapping("/drink/:name")
+    public Drink individualDrink (Drink drink){
 
-        newDrinkOrder.setStatus(Status.INITIAL);
-        newDrinks.add(newDrinkOrder);
+        drinkRepository.findByStrDrink(drink.getStrDrink());
 
-        return newDrinkOrder;
+        return drink;
     }
+
+//    @PostMapping("/drink_menu")
+//    public Drink addDrinkToCart (Drink drink, List<DrinkOrder> newDrinks){
+////        create a new drinkOrder, allow to add multiple drinks into cart, set status as initial
+//        DrinkOrder newDrinkOrder = new DrinkOrder();
+//
+//        newDrinkOrder.setStatus(Status.INITIAL);
+//        newDrinks.add(newDrinkOrder);
+//
+//        return newDrinkOrder;
+//    }
 
     @GetMapping("/drink_order/:orderId")
     public DrinkOrder drinkOrder (DrinkOrder drinkOrder){
 //      shows individual drinkOrder and the items in the drinkOrder
 
-        DrinkOrder currentDrinkOrder = drinkOrderRepository.getById(drinkOrder.getOrderId());
+        DrinkOrder currentDrinkOrder = drinkOrderRepository.getByOrderId(drinkOrder.getOrderId());
+
+//        currentDrinkOrder.getDrinks();
+        for (Drink drink: currentDrinkOrder.getDrinks()) {
+            drink.getIdDrink();
+            drink.getStrDrink();
+            drink.getStrIngredient1();
+            drink.getStrIngredient2();
+            drink.getStrIngredient3();
+            drink.getStrIngredient4();
+            drink.getStrIngredient5();
+            drink.getStrIngredient6();
+            drink.getStrIngredient7();
+            drink.getStrIngredient8();
+            drink.getStrIngredient9();
+            drink.getStrIngredient10();
+            drink.getStrIngredient11();
+            drink.getStrIngredient12();
+            drink.getStrIngredient13();
+            drink.getStrIngredient14();
+            drink.getStrIngredient15();
+
+            System.out.println(drink);
+        }
 
         return currentDrinkOrder;
     }
 
     @GetMapping("/timeline/:orderId/:status")
     public String drinkTimeline (DrinkOrder drinkOrder){
-//        should change whenever bartender pushes button to move the statuses
+//        should change whenever bartender pushes buttons to move the statuses
 
         if (drinkOrder.getStatus() == Status.IN_PROGRESS){
             return "Bartender is currently working on your drink order";

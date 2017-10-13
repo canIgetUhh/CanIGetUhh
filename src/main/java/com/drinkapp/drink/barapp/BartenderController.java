@@ -67,31 +67,55 @@ public class BartenderController {
         return "new bartender was created";
     }
 
-    @GetMapping("/current_order")
-    public List<DrinkOrder> allCurrentOrders (List<DrinkOrder> currentDrinkOrders){
-//get a list of all the current drinkOrders available
-        currentDrinkOrders.add(drinkOrderRepository.getAllDrinkOrders(DrinkOrder.class));
-
-        return currentDrinkOrders;
-    }
+//    @GetMapping("/current_order")
+//    public List<DrinkOrder> allCurrentOrders (DrinkOrder drinkOrder){
+////get a list of all the current drinkOrders available
+//
+//        List<DrinkOrder>  currentDrinkOrders = drinkOrderRepository.getDrinks(drinkOrder.getDrinks());
+//
+//        return currentDrinkOrders;
+//    }
 
     @GetMapping("/current_order/:orderId")
     public DrinkOrder currentOrder (DrinkOrder drinkOrder){
 //        finds a single drinkOrder with all drink items
 
-        DrinkOrder openOrder = drinkOrderRepository.getById(drinkOrder.getOrderId());
-
+        DrinkOrder openOrder = drinkOrderRepository.getByOrderId(drinkOrder.getOrderId());
+        
         openOrder.setStatus(Status.IN_PROGRESS);
-        openOrder.getDrinks();
+//        openOrder.getDrinks();
+
+        for (Drink drink: openOrder.getDrinks()) {
+            drink.getIdDrink();
+            drink.getStrDrink();
+            drink.getStrIngredient1();
+            drink.getStrIngredient2();
+            drink.getStrIngredient3();
+            drink.getStrIngredient4();
+            drink.getStrIngredient5();
+            drink.getStrIngredient6();
+            drink.getStrIngredient7();
+            drink.getStrIngredient8();
+            drink.getStrIngredient9();
+            drink.getStrIngredient10();
+            drink.getStrIngredient11();
+            drink.getStrIngredient12();
+            drink.getStrIngredient13();
+            drink.getStrIngredient14();
+            drink.getStrIngredient15();
+
+            System.out.println(drink);
+        }
 
         return openOrder;
     }
 
     @GetMapping("/completed_orders")
-    public DrinkOrder completedOrders (DrinkOrder drinkOrder, Status status){
+    public DrinkOrder completedOrders (DrinkOrder drinkOrder){
         List<DrinkOrder> completedDrinkOrders = new ArrayList<>();
 
-        if ( drinkOrder.getStatus() == Status.COMPLETE){
+        if (drinkOrder.getStatus() == Status.COMPLETE){
+
             completedDrinkOrders.add(drinkOrder);
         }
         return drinkOrder;

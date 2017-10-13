@@ -1,17 +1,16 @@
 package com.drinkapp.drink.drinkOrder;
 
-import com.drinkapp.drink.drinks.Drink;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public interface DrinkOrderRepository extends JpaRepository<Drink, Integer> {
+public interface DrinkOrderRepository extends JpaRepository<DrinkOrder, Integer> {
 
-    DrinkOrder getById(int id);
+    DrinkOrder getByOrderId(int orderId);
 
-    List<DrinkOrder> getAllDrinkOrders ();
+//    List<DrinkOrder> getDrinks(ArrayList<Drink> drinks);
 
-    ArrayList<Drink> createDrinkOrder();
+//    ArrayList<Drink> createdrinkOrder();
 
 }

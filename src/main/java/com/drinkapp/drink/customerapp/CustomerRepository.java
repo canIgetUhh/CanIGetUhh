@@ -9,5 +9,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
 //    Customer getByUserName ();
 
-    Optional<Customer> getByUserName(String username);
+    Optional<Customer> getByUsername(String username);
 }
