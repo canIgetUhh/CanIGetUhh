@@ -1,13 +1,17 @@
 package com.drinkapp.drink.customerapp;
 
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
+import com.drinkapp.drink.drinks.AllOfTheDrinks;
+import com.drinkapp.drink.drinks.Drink;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +23,11 @@ public class CustomerController {
 
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
+
+    String searchValue;
+
+    String API_URL = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
+
 
     @PostMapping("/login")
     public String customerLogIn (@RequestBody Customer customer, HttpSession session){
@@ -67,5 +76,30 @@ public class CustomerController {
         customerRepository.save(createNewCustomer);
 
         return "new user was created";
+    }
+
+    //Search using the search bar to find what kind of drink you want to order
+    @GetMapping("/drink_menu")
+    public List<Drink> searchForDrinkName (){
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = API_URL + "Mojito";
+
+        AllOfTheDrinks allOfTheDrinks = restTemplate.getForObject(url, AllOfTheDrinks.class );
+
+        System.out.println("ALL THE DRINKS: " + allOfTheDrinks);
+//        AllOfTheDrinks searchForDrinkName =
+
+
+        //AllOfTheDrinks findAllDrinksByName = allOfTheDrinks.getDrinks(drink.getStrDrink(Api_Url+ strDrink));
+
+
+
+//        allOfTheDrinks.getDrinks(Api_Url + strDrink);
+
+//        for (Drink drinksLists : allOfTheDrinks.getDrinks())
+//            drinksLists.setStrDrink(Api_Url + strDrink);
+
+        return allOfTheDrinks.getDrinks();
     }
 }
