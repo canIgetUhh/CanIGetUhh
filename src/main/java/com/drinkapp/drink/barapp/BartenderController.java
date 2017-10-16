@@ -80,7 +80,7 @@ public class BartenderController {
     public DrinkOrder currentOrder (DrinkOrder drinkOrder){
 //        finds a single drinkOrder with all drink items
 
-        DrinkOrder openOrder = drinkOrderRepository.getByOrderId(drinkOrder.getOrderId());
+        DrinkOrder openOrder = drinkOrderRepository.findById(drinkOrder.getOrderId());
         
         openOrder.setStatus(Status.IN_PROGRESS);
 //        openOrder.getDrinks();

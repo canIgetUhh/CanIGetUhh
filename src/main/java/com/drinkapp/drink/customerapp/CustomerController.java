@@ -1,17 +1,14 @@
 package com.drinkapp.drink.customerapp;
 
-import com.drinkapp.drink.Status;
-import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
 import com.drinkapp.drink.drinks.AllOfTheDrinks;
 import com.drinkapp.drink.drinks.Drink;
-import com.drinkapp.drink.drinks.DrinkRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +22,9 @@ public class CustomerController {
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
 
-    @Autowired
-    DrinkRepository drinkRepository;
+
+    String API_URL = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
+
 
     @PostMapping("/login")
     public String customerLogIn (@RequestBody Customer customer, HttpSession session){
@@ -76,80 +74,17 @@ public class CustomerController {
         return "new user was created";
     }
 
-
+    //Search using the search bar to find what kind of drink you want to order
     @GetMapping("/drink_menu")
-    public List<Drink> drinkMenu (AllOfTheDrinks allDrinks){
-//        shows list of all drinks available to select
+    public List<Drink> searchForDrinkName (){
+
         RestTemplate restTemplate = new RestTemplate();
+        String url = API_URL + "Mojito";
 
-        restTemplate.getForObject()
+        AllOfTheDrinks allOfTheDrinks = restTemplate.getForObject(url, AllOfTheDrinks.class );
 
-       List<Drink> Drinks = allDrinks.getDrinks();
+        System.out.println("ALL THE DRINKS: " + allOfTheDrinks);
 
-        return Drinks;
-    }
-
-    @GetMapping("/drink/:name")
-    public Drink individualDrink (Drink drink){
-
-        drinkRepository.findByStrDrink(drink.getStrDrink());
-
-        return drink;
-    }
-
-//    @PostMapping("/drink_menu")
-//    public Drink addDrinkToCart (Drink drink, List<DrinkOrder> newDrinks){
-////        create a new drinkOrder, allow to add multiple drinks into cart, set status as initial
-//        DrinkOrder newDrinkOrder = new DrinkOrder();
-//
-//        newDrinkOrder.setStatus(Status.INITIAL);
-//        newDrinks.add(newDrinkOrder);
-//
-//        return newDrinkOrder;
-//    }
-
-    @GetMapping("/drink_order/:orderId")
-    public DrinkOrder drinkOrder (DrinkOrder drinkOrder){
-//      shows individual drinkOrder and the items in the drinkOrder
-
-        DrinkOrder currentDrinkOrder = drinkOrderRepository.getByOrderId(drinkOrder.getOrderId());
-
-//        currentDrinkOrder.getDrinks();
-        for (Drink drink: currentDrinkOrder.getDrinks()) {
-            drink.getIdDrink();
-            drink.getStrDrink();
-            drink.getStrIngredient1();
-            drink.getStrIngredient2();
-            drink.getStrIngredient3();
-            drink.getStrIngredient4();
-            drink.getStrIngredient5();
-            drink.getStrIngredient6();
-            drink.getStrIngredient7();
-            drink.getStrIngredient8();
-            drink.getStrIngredient9();
-            drink.getStrIngredient10();
-            drink.getStrIngredient11();
-            drink.getStrIngredient12();
-            drink.getStrIngredient13();
-            drink.getStrIngredient14();
-            drink.getStrIngredient15();
-
-            System.out.println(drink);
-        }
-
-        return currentDrinkOrder;
-    }
-
-    @GetMapping("/timeline/:orderId/:status")
-    public String drinkTimeline (DrinkOrder drinkOrder){
-//        should change whenever bartender pushes buttons to move the statuses
-
-        if (drinkOrder.getStatus() == Status.IN_PROGRESS){
-            return "Bartender is currently working on your drink order";
-        }
-        if (drinkOrder.getStatus() == Status.COMPLETE){
-            return "Bartender has completed your order! Please show your ID to the bartender";
-        }
-        return "Your Drink Order has been received by the bartender";
+        return allOfTheDrinks.getDrinks();
     }
 }

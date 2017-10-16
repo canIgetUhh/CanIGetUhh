@@ -18,8 +18,11 @@ public class DrinkApplication {
 	@Bean
     public String run() {
 
+        String url = API_URL + "Margarita";
         RestTemplate restTemplate = new RestTemplate();
-        AllOfTheDrinks allOfTheDrinks = restTemplate.getForObject(API_URL, AllOfTheDrinks.class );
+
+        AllOfTheDrinks allOfTheDrinks = restTemplate.getForObject(url, AllOfTheDrinks.class );
+//        System.out.println(allOfTheDrinks);
 
         System.out.println(allOfTheDrinks);
         System.out.println(allOfTheDrinks.getDrinks().get(0).getStrDrink());

@@ -1,8 +1,12 @@
 package com.drinkapp.drink.drinks;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table
@@ -14,9 +18,6 @@ public class Drink {
 
     @Column
     private String strDrink;
-
-    @Column
-    public  String strDrinkThumb;
 
     @Column
     public String strIngredient1,strIngredient2,strIngredient3,strIngredient4,strIngredient5,strIngredient6,strIngredient7,strIngredient8,   strIngredient9,strIngredient10,strIngredient11,strIngredient12,strIngredient13,strIngredient14,strIngredient15;
@@ -38,14 +39,6 @@ public class Drink {
 
     public void setStrDrink(String strDrink) {
         this.strDrink = strDrink;
-    }
-
-    public String getStrDrinkThumb() {
-        return strDrinkThumb;
-    }
-
-    public void setStrDrinkThumb(String strDrinkThumb) {
-        this.strDrinkThumb = strDrinkThumb;
     }
 
     public String getStrIngredient1() {
@@ -168,12 +161,12 @@ public class Drink {
         this.strIngredient15 = strIngredient15;
     }
 
+
     @Override
     public String toString() {
         return "Drink{" +
                 "idDrink=" + idDrink +
                 ", strDrink='" + strDrink + '\'' +
-                ", strDrinkThumb='" + strDrinkThumb + '\'' +
                 ", strIngredient1='" + strIngredient1 + '\'' +
                 ", strIngredient2='" + strIngredient2 + '\'' +
                 ", strIngredient3='" + strIngredient3 + '\'' +
