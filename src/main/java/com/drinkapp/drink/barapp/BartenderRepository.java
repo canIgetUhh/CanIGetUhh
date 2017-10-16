@@ -10,10 +10,4 @@ public interface BartenderRepository extends JpaRepository<Bartender, Integer> {
 
     Optional<Bartender> getByUsername(String username);
 
-
-
-
-
-
-
 }
