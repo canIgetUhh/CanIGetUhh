@@ -20,6 +20,7 @@ public class DrinkApplication {
 
         String url = API_URL + "Margarita";
         RestTemplate restTemplate = new RestTemplate();
+
         AllOfTheDrinks allOfTheDrinks = restTemplate.getForObject(url, AllOfTheDrinks.class );
 //        System.out.println(allOfTheDrinks);
 
@@ -29,6 +30,5 @@ public class DrinkApplication {
 
         return "done";
     }
-
 
 }

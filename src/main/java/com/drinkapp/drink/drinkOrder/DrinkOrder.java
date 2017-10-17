@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 
 @Entity
-@Table(name="drinkorders")
+@Table(name = "drinkorders")
 public class DrinkOrder {
 
     @Id
@@ -29,20 +29,11 @@ public class DrinkOrder {
     public DrinkOrder() {
     }
 
-    public DrinkOrder(int orderId, Customer customer, Bartender bartender, ArrayList<Drink> drinks, Status status) {
-        this.orderId = orderId;
+    public DrinkOrder(Customer customer, Bartender bartender, ArrayList<Drink> drinks, Status status) {
         this.customer = customer;
         this.bartender = bartender;
         this.drinks = drinks;
         this.status = status;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
     }
 
     public Customer getCustomer() {
@@ -75,5 +66,24 @@ public class DrinkOrder {
 
     public void setDrinks(ArrayList<Drink> drinks) {
         this.drinks = drinks;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    private void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    @Override
+    public String toString() {
+        return "DrinkOrder{" +
+                "orderId=" + orderId +
+                ", customer=" + customer +
+                ", bartender=" + bartender +
+                ", drinks=" + drinks +
+                ", status=" + status +
+                '}';
     }
 }
