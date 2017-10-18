@@ -11,5 +11,5 @@ public interface DrinkRepository extends JpaRepository<Drink, Integer> {
 
         Drink getByIdDrink(int idDrink);
 
-    }
+}
 

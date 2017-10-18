@@ -26,7 +26,7 @@ public class Customer {
     @Column
     private String email;
 
-    @Column
+    @Column(unique = true, name = "username")
     public String username;
 
     @Column

@@ -1,22 +1,19 @@
 package com.drinkapp.drink.customerapp;
 
-import com.drinkapp.drink.Requests.DrinkOrderRequest;
+import com.drinkapp.drink.drinkEntry.DrinkEntry;
+import com.drinkapp.drink.requests.DrinkOrderRequest;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
 import com.drinkapp.drink.drinks.AllOfTheDrinks;
 import com.drinkapp.drink.drinks.Drink;
 
-import com.drinkapp.drink.drinks.DrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/customer")
@@ -108,29 +105,23 @@ public class CustomerController {
         return allOfTheDrinks.getDrinks();
     }
 
-    @PostMapping("/drink_order")
-    public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest) {
+
+@PostMapping("/drink_order")
+public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest) {
 //create a new drink order and add drinks to the order
 
-        ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
-        System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
-        DrinkOrder drinkOrder = new DrinkOrder();
+    ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
+    System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
 
-//        for (Drink newDrink : newDrinkOrder) {
-////            newDrink.getIdDrink();
-//            newDrinkOrder.add(newDrink);
-////            drinkRepository.save(newDrink);
-//            System.out.println("This drink was saved: " + newDrink);
-//        }
-//        drinkOrder.setCustomer(customer);
-//        drinkOrder.setDrinks(newDrinkOrder);
-        drinkOrder.setDrinks(newDrinks);
-        drinkOrder.setStatus(Status.INITIAL);
-        drinkOrderRepository.save(drinkOrder);
-        System.out.println("This is the created drinkOrder: " + drinkOrder);
+    DrinkOrder drinkOrder = new DrinkOrder();
 
-        return drinkOrder;
-    }
+    drinkOrder.setDrinkEntries(new HashSet<>(drinkOrderRequest.getDrinkEntries()));
+    drinkOrder.setStatus(Status.INITIAL);
+    drinkOrderRepository.save(drinkOrder);
+    System.out.println("This is the created drinkOrder: " + drinkOrder);
+
+    return drinkOrder;
+}
 
 //    @GetMapping("/timeline/{orderId}")
 //    public String drinkTimeline(@PathParam("orderId") DrinkOrder drinkOrder) {

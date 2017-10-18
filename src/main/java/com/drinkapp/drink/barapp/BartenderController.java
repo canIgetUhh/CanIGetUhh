@@ -79,27 +79,27 @@ public class BartenderController {
 //      get a list of all the current drinkOrders available
 
 //        drinkOrder.setBartender(bartender);
-        if (drinkOrder.getStatus() == Status.INITIAL){
-            initialDrinkOrders.add(drinkOrder.getDrinks());
-            System.out.println("This order has been added to the list: " + drinkOrder);
-        }
+//        if (drinkOrder.getStatus() == Status.INITIAL){
+//            initialDrinkOrders.add(drinkOrder.getDrinks());
+//            System.out.println("This order has been added to the list: " + drinkOrder);
+//        }
 
         return initialDrinkOrders;
     }
 
-    @GetMapping("/current_order/{orderId}")
-    public DrinkOrder currentOrder (DrinkOrder drinkOrder){
-//        finds a single drinkOrder with all drink items
-
-        DrinkOrder openOrder = drinkOrderRepository.findById(drinkOrder.getOrderId());
-
-        initialDrinkOrders.remove(openOrder);
-        openOrder.setStatus(Status.IN_PROGRESS);
-        inProgressDrinkOrders.add(openOrder);
-        openOrder.getDrinks();
-
-        return openOrder;
-    }
+//    @GetMapping("/current_order/{orderId}")
+//    public DrinkOrder currentOrder (DrinkOrder drinkOrder){
+////        finds a single drinkOrder with all drink items
+//
+//        DrinkOrder openOrder = drinkOrderRepository.findById(drinkOrder.getOrderId());
+//
+//        initialDrinkOrders.remove(openOrder);
+//        openOrder.setStatus(Status.IN_PROGRESS);
+//        inProgressDrinkOrders.add(openOrder);
+//        openOrder.getDrinks();
+//
+//        return openOrder;
+//    }
 
 //    @GetMapping("/completed_orders")
 //    public DrinkOrder completedOrders (DrinkOrder drinkOrder){

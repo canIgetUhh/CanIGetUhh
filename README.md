@@ -40,4 +40,4 @@ curl --request POST \
 	"username": "kirra",
 	"password": "pass",
 	"dob": "10/12/1991"
-}'
+}

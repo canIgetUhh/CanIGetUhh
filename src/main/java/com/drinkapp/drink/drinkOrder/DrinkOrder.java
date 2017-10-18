@@ -3,10 +3,12 @@ package com.drinkapp.drink.drinkOrder;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.barapp.Bartender;
 import com.drinkapp.drink.customerapp.Customer;
+import com.drinkapp.drink.drinkEntry.DrinkEntry;
 import com.drinkapp.drink.drinks.Drink;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Entity
 @Table(name = "drinkorders")
@@ -22,18 +24,22 @@ public class DrinkOrder {
     @OneToOne
     Bartender bartender;
 
-    ArrayList<Drink> drinks;
+//    ArrayList<Drink> drinks;
 
     Status status;
+
+    @OneToMany(mappedBy = "drinkOrder")
+    Set<DrinkEntry> drinkEntries;
 
     public DrinkOrder() {
     }
 
-    public DrinkOrder(Customer customer, Bartender bartender, ArrayList<Drink> drinks, Status status) {
+    public DrinkOrder(int orderId, Customer customer, Bartender bartender, Status status, Set<DrinkEntry> drinkEntries) {
+        this.orderId = orderId;
         this.customer = customer;
         this.bartender = bartender;
-        this.drinks = drinks;
         this.status = status;
+        this.drinkEntries = drinkEntries;
     }
 
     public Customer getCustomer() {
@@ -60,13 +66,13 @@ public class DrinkOrder {
         this.status = status;
     }
 
-    public ArrayList<Drink> getDrinks() {
-        return drinks;
-    }
-
-    public void setDrinks(ArrayList<Drink> drinks) {
-        this.drinks = drinks;
-    }
+//    public ArrayList<Drink> getDrinks() {
+//        return drinks;
+//    }
+//
+//    public void setDrinks(ArrayList<Drink> drinks) {
+//        this.drinks = drinks;
+//    }
 
     public int getOrderId() {
         return orderId;
@@ -76,14 +82,22 @@ public class DrinkOrder {
         this.orderId = orderId;
     }
 
+    public Set<DrinkEntry> getDrinkEntries() {
+        return drinkEntries;
+    }
+
+    public void setDrinkEntries(Set<DrinkEntry> drinkEntries) {
+        this.drinkEntries = drinkEntries;
+    }
+
     @Override
     public String toString() {
         return "DrinkOrder{" +
                 "orderId=" + orderId +
                 ", customer=" + customer +
                 ", bartender=" + bartender +
-                ", drinks=" + drinks +
                 ", status=" + status +
+                ", drinkEntries=" + drinkEntries +
                 '}';
     }
 }
