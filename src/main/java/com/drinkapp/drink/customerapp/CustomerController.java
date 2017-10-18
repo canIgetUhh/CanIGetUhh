@@ -1,16 +1,19 @@
 package com.drinkapp.drink.customerapp;
 
+import com.drinkapp.drink.Requests.DrinkOrderRequest;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
 import com.drinkapp.drink.drinks.AllOfTheDrinks;
 import com.drinkapp.drink.drinks.Drink;
 
+import com.drinkapp.drink.drinks.DrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -106,38 +109,42 @@ public class CustomerController {
     }
 
     @PostMapping("/drink_order")
-    public DrinkOrder createANewDrinkOrder(@RequestBody Drink drink, Customer customer) {
+    public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest) {
 //create a new drink order and add drinks to the order
 
-        System.out.println("The drink: " + drink);
-        ArrayList<Drink> newDrinkOrder = new ArrayList<>();
+        ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
+        System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
         DrinkOrder drinkOrder = new DrinkOrder();
 
-        for (Drink newDrink : newDrinkOrder) {
-            newDrinkOrder.add(newDrink);
-        }
-        drinkOrder.setCustomer(customer);
-        drinkOrder.setDrinks(newDrinkOrder);
+//        for (Drink newDrink : newDrinkOrder) {
+////            newDrink.getIdDrink();
+//            newDrinkOrder.add(newDrink);
+////            drinkRepository.save(newDrink);
+//            System.out.println("This drink was saved: " + newDrink);
+//        }
+//        drinkOrder.setCustomer(customer);
+//        drinkOrder.setDrinks(newDrinkOrder);
+        drinkOrder.setDrinks(newDrinks);
         drinkOrder.setStatus(Status.INITIAL);
         drinkOrderRepository.save(drinkOrder);
-        System.out.println(drinkOrder);
+        System.out.println("This is the created drinkOrder: " + drinkOrder);
 
         return drinkOrder;
     }
 
-    @GetMapping("/timeline/:orderId")
-    public String drinkTimeline(@RequestParam DrinkOrder drinkOrder) {
-//        should change whenever bartender pushes buttons to move through the statuses
-
-        System.out.println(drinkOrder.getStatus());
-        if (drinkOrder.getStatus() == Status.IN_PROGRESS) {
-            System.out.println(drinkOrder.getStatus());
-            return "Bartender is currently working on your drink order";
-        }
-        if (drinkOrder.getStatus() == Status.COMPLETE) {
-            System.out.println(drinkOrder.getStatus());
-            return "Bartender has completed your order! Please show your ID to the bartender";
-        }
-        return "Your Drink Order has been received by the bartender";
-    }
+//    @GetMapping("/timeline/{orderId}")
+//    public String drinkTimeline(@PathParam("orderId") DrinkOrder drinkOrder) {
+////        should change whenever bartender pushes buttons to move through the statuses
+//
+//        System.out.println(drinkOrder.getStatus());
+//        if (drinkOrder.getStatus() == Status.IN_PROGRESS) {
+//            System.out.println(drinkOrder.getStatus());
+//            return "Bartender is currently working on your drink order";
+//        }
+//        if (drinkOrder.getStatus() == Status.COMPLETE) {
+//            System.out.println(drinkOrder.getStatus());
+//            return "Bartender has completed your order! Please show your ID to the bartender";
+//        }
+//        return "Your Drink Order has been received by the bartender";
+//    }
 }
