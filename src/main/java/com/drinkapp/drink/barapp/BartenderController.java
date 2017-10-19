@@ -40,15 +40,18 @@ public class BartenderController {
         System.out.println(bartender.getPassword());
 
         Optional <Bartender> findBartender = bartenderRepository.getByUsername(bartender.getUsername());
+
         if (!findBartender.isPresent()) {
             return "That's not a user in our list";
         }
+
         Bartender currentBartender = findBartender.get();
 //        boolean isCorrectPassword = BCrypt.checkpw(bartender.getPassword(), findBartender.getPassword());
-        boolean isCorrectPassword = bartender.getPassword() == currentBartender.getPassword();
+        boolean isCorrectPassword = bartender.getPassword().equals(bartender.getPassword());
         if (isCorrectPassword){
             session.setAttribute("bartenderId", findBartender.hashCode());
             System.out.println(bartender);
+            
             return "Bartender is successfully logged in";
         }
 

@@ -5,13 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "customers")
 public class Customer {
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +38,14 @@ public class Customer {
         this.username = username;
         this.password = password;
         this.dob = dob;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {

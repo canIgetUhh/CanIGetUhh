@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.Id;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
@@ -35,26 +36,28 @@ public class CustomerController {
         System.out.println(customer.getPassword());
 
         Optional<Customer> findCustomer = customerRepository.getByUsername(customer.getUsername());
+
         if (!findCustomer.isPresent()) {
             return "That's not a user in our list";
         }
+
         Customer currentCustomer = findCustomer.get();
 //        boolean isCorrectPassword = BCrypt.checkpw(customer.getPassword(), currentCustomer.getPassword());
-        boolean isCorrectPassword = customer.getPassword() == currentCustomer.getPassword();
+        boolean isCorrectPassword = customer.getPassword().equals(currentCustomer.getPassword());
         if (isCorrectPassword) {
             session.setAttribute("customerId", findCustomer.hashCode());
-            System.out.println(customer);
+            System.out.println(currentCustomer);
 
             return "Customer is successfully logged in";
         }
+
         return "No user/password combination exists in our system";
     }
+
 
     @CrossOrigin
     @PostMapping("/signup")
     public String customerSignUp(@RequestBody Customer customer) {
-
-        System.out.println(customer);
 
         String firstName = customer.getFirstName();
         String lastName = customer.getLastName();
@@ -74,8 +77,9 @@ public class CustomerController {
         createNewCustomer.setDob(dob);
 
         customerRepository.save(createNewCustomer);
+        System.out.println("Created Customer: " + customer);
 
-        return "new user was created";
+        return "new Customer was created";
     }
 
     @GetMapping("/view_all_drinks")
@@ -107,8 +111,13 @@ public class CustomerController {
 
 
 @PostMapping("/drink_order")
-public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest) {
+public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest, HttpSession session) {
 //create a new drink order and add drinks to the order
+
+    if(session.getAttribute("customerId") == null){
+        System.out.println("User must log in to create an order");
+    }
+
 
     ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
     System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
