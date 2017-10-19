@@ -1,12 +1,12 @@
 package com.drinkapp.drink.drinks;
 
+import com.drinkapp.drink.drinkEntry.DrinkEntry;
+import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table
@@ -24,6 +24,9 @@ public class Drink {
 
     @Column
     private String strIngredient1,strIngredient2,strIngredient3,strIngredient4,strIngredient5,strIngredient6,strIngredient7,strIngredient8,   strIngredient9,strIngredient10,strIngredient11,strIngredient12,strIngredient13,strIngredient14,strIngredient15;
+
+    @OneToMany(mappedBy = "drink")
+    Set<DrinkEntry> drinkEntries;
 
     public Drink() {
     }
@@ -170,6 +173,14 @@ public class Drink {
 
     public void setStrIngredient15(String strIngredient15) {
         this.strIngredient15 = strIngredient15;
+    }
+
+    public Set<DrinkEntry> getDrinkEntries() {
+        return drinkEntries;
+    }
+
+    public void setDrinkEntries(Set<DrinkEntry> drinkEntries) {
+        this.drinkEntries = drinkEntries;
     }
 
     @Override

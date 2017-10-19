@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface DrinkRepository {
+public interface DrinkRepository extends JpaRepository<Drink, Integer> {
 
-        Drink getByName(String strDrink);
+        Drink getByStrDrink(String strDrink);
 
-    }
+        Drink getByIdDrink(int idDrink);
+
+}
 

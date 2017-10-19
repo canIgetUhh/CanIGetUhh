@@ -1,5 +1,7 @@
 package com.drinkapp.drink.customerapp;
 
+import com.drinkapp.drink.drinkEntry.DrinkEntry;
+import com.drinkapp.drink.requests.DrinkOrderRequest;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinkOrder.DrinkOrderRepository;
@@ -10,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.Id;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/customer")
@@ -35,26 +36,28 @@ public class CustomerController {
         System.out.println(customer.getPassword());
 
         Optional<Customer> findCustomer = customerRepository.getByUsername(customer.getUsername());
+
         if (!findCustomer.isPresent()) {
             return "That's not a user in our list";
         }
+
         Customer currentCustomer = findCustomer.get();
 //        boolean isCorrectPassword = BCrypt.checkpw(customer.getPassword(), currentCustomer.getPassword());
-        boolean isCorrectPassword = customer.getPassword() == currentCustomer.getPassword();
+        boolean isCorrectPassword = customer.getPassword().equals(currentCustomer.getPassword());
         if (isCorrectPassword) {
             session.setAttribute("customerId", findCustomer.hashCode());
-            System.out.println(customer);
+            System.out.println(currentCustomer);
 
             return "Customer is successfully logged in";
         }
+
         return "No user/password combination exists in our system";
     }
+
 
     @CrossOrigin
     @PostMapping("/signup")
     public String customerSignUp(@RequestBody Customer customer) {
-
-        System.out.println(customer);
 
         String firstName = customer.getFirstName();
         String lastName = customer.getLastName();
@@ -74,8 +77,9 @@ public class CustomerController {
         createNewCustomer.setDob(dob);
 
         customerRepository.save(createNewCustomer);
+        System.out.println("Created Customer: " + customer);
 
-        return "new user was created";
+        return "new Customer was created";
     }
 
     @GetMapping("/view_all_drinks")
@@ -105,39 +109,42 @@ public class CustomerController {
         return allOfTheDrinks.getDrinks();
     }
 
-    @PostMapping("/drink_order")
-    public DrinkOrder createANewDrinkOrder(@RequestBody Drink drink, Customer customer) {
+
+@PostMapping("/drink_order")
+public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest, HttpSession session) {
 //create a new drink order and add drinks to the order
 
-        System.out.println("The drink: " + drink);
-        ArrayList<Drink> newDrinkOrder = new ArrayList<>();
-        DrinkOrder drinkOrder = new DrinkOrder();
-
-        for (Drink newDrink : newDrinkOrder) {
-            newDrinkOrder.add(newDrink);
-        }
-        drinkOrder.setCustomer(customer);
-        drinkOrder.setDrinks(newDrinkOrder);
-        drinkOrder.setStatus(Status.INITIAL);
-        drinkOrderRepository.save(drinkOrder);
-        System.out.println(drinkOrder);
-
-        return drinkOrder;
+    if(session.getAttribute("customerId") == null){
+        System.out.println("User must log in to create an order");
     }
 
-    @GetMapping("/timeline/:orderId")
-    public String drinkTimeline(@RequestParam DrinkOrder drinkOrder) {
-//        should change whenever bartender pushes buttons to move through the statuses
 
-        System.out.println(drinkOrder.getStatus());
-        if (drinkOrder.getStatus() == Status.IN_PROGRESS) {
-            System.out.println(drinkOrder.getStatus());
-            return "Bartender is currently working on your drink order";
-        }
-        if (drinkOrder.getStatus() == Status.COMPLETE) {
-            System.out.println(drinkOrder.getStatus());
-            return "Bartender has completed your order! Please show your ID to the bartender";
-        }
-        return "Your Drink Order has been received by the bartender";
-    }
+    ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
+    System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
+
+    DrinkOrder drinkOrder = new DrinkOrder();
+
+    drinkOrder.setDrinkEntries(new HashSet<>(drinkOrderRequest.getDrinkEntries()));
+    drinkOrder.setStatus(Status.INITIAL);
+    drinkOrderRepository.save(drinkOrder);
+    System.out.println("This is the created drinkOrder: " + drinkOrder);
+
+    return drinkOrder;
+}
+
+//    @GetMapping("/timeline/{orderId}")
+//    public String drinkTimeline(@PathParam("orderId") DrinkOrder drinkOrder) {
+////        should change whenever bartender pushes buttons to move through the statuses
+//
+//        System.out.println(drinkOrder.getStatus());
+//        if (drinkOrder.getStatus() == Status.IN_PROGRESS) {
+//            System.out.println(drinkOrder.getStatus());
+//            return "Bartender is currently working on your drink order";
+//        }
+//        if (drinkOrder.getStatus() == Status.COMPLETE) {
+//            System.out.println(drinkOrder.getStatus());
+//            return "Bartender has completed your order! Please show your ID to the bartender";
+//        }
+//        return "Your Drink Order has been received by the bartender";
+//    }
 }

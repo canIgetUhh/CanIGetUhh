@@ -9,7 +9,7 @@ public class Bartender {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
+    @Column(unique = true, name = "username")
     public String username;
 
     @Column
