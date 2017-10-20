@@ -10,10 +10,15 @@ import java.util.stream.Collectors;
 
 public class DrinkOrderRequest {
 
+    int sessionId;
 
     private ArrayList<Drink> drinks;
 
     public DrinkOrderRequest() {
+    }
+
+    public int getSessionId() {
+        return sessionId;
     }
 
     public ArrayList<Drink> getDrinks() {

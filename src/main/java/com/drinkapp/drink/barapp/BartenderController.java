@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/bar")
@@ -26,11 +24,11 @@ public class BartenderController {
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
 
-    List<ArrayList<Drink>> initialDrinkOrders = new ArrayList<ArrayList<Drink>>();
-
-    List<DrinkOrder> inProgressDrinkOrders = new ArrayList<>();
-
-    List<DrinkOrder> completedDrinkOrders = new ArrayList<>();
+      List<DrinkOrder> initialDrinkOrders = new ArrayList<>();
+//
+//    List<DrinkOrder> inProgressDrinkOrders = new ArrayList<>();
+//
+//    List<DrinkOrder> completedDrinkOrders = new ArrayList<>();
 
 
     @PostMapping("/login")
@@ -51,7 +49,7 @@ public class BartenderController {
         if (isCorrectPassword){
             session.setAttribute("bartenderId", findBartender.hashCode());
             System.out.println(bartender);
-            
+
             return "Bartender is successfully logged in";
         }
 
@@ -77,17 +75,14 @@ public class BartenderController {
         return "new bartender was created";
     }
 
-    @GetMapping("/current_order")
-    public List<ArrayList<Drink>> allCurrentOrders (@RequestParam DrinkOrder drinkOrder){
+    @GetMapping("/current_orders")
+    public List<DrinkOrder> allCurrentOrders (){
 //      get a list of all the current drinkOrders available
 
-//        drinkOrder.setBartender(bartender);
-//        if (drinkOrder.getStatus() == Status.INITIAL){
-//            initialDrinkOrders.add(drinkOrder.getDrinks());
-//            System.out.println("This order has been added to the list: " + drinkOrder);
-//        }
+        while (true) {
+            drinkOrderRepository.findAll();
+        }
 
-        return initialDrinkOrders;
     }
 
 //    @GetMapping("/current_order/{orderId}")

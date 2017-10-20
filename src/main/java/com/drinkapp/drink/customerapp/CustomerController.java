@@ -1,6 +1,7 @@
 package com.drinkapp.drink.customerapp;
 
-import com.drinkapp.drink.drinkEntry.DrinkEntry;
+import com.drinkapp.drink.HttpUnauthorizedException;
+import com.drinkapp.drink.SessionManager;
 import com.drinkapp.drink.requests.DrinkOrderRequest;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.Id;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @RestController
@@ -31,27 +30,26 @@ public class CustomerController {
 
 
     @PostMapping("/login")
-    public String customerLogIn(@RequestBody Customer customer, HttpSession session) {
-        System.out.println(customer.getUsername());
-        System.out.println(customer.getPassword());
+    public Integer customerLogIn(@RequestBody String username, String password) {
 
-        Optional<Customer> findCustomer = customerRepository.getByUsername(customer.getUsername());
+        Optional<Customer> possibleCustomer = customerRepository.getByUsername(username);
 
-        if (!findCustomer.isPresent()) {
-            return "That's not a user in our list";
+        if (!possibleCustomer.isPresent()) {
+//            return "That's not a user in our list";
+            throw new HttpUnauthorizedException();
         }
 
-        Customer currentCustomer = findCustomer.get();
+        Customer currentCustomer = possibleCustomer.get();
 //        boolean isCorrectPassword = BCrypt.checkpw(customer.getPassword(), currentCustomer.getPassword());
-        boolean isCorrectPassword = customer.getPassword().equals(currentCustomer.getPassword());
+        boolean isCorrectPassword = password.equals(currentCustomer.getPassword());
         if (isCorrectPassword) {
-            session.setAttribute("customerId", findCustomer.hashCode());
+
+            Integer sessionIdNumber = SessionManager.global.createSession(currentCustomer.getId());
             System.out.println(currentCustomer);
-
-            return "Customer is successfully logged in";
+            System.out.println("Current customer sessionID: " + sessionIdNumber);
+            return sessionIdNumber;
         }
-
-        return "No user/password combination exists in our system";
+        throw new HttpUnauthorizedException();
     }
 
 
@@ -83,7 +81,7 @@ public class CustomerController {
     }
 
     @GetMapping("/view_all_drinks")
-    public List<Drink> viewAllDrinks (){
+    public List<Drink> viewAllDrinks() {
 //        show the list of all drinks in the database
 
         RestTemplate restTemplate = new RestTemplate();
@@ -109,28 +107,35 @@ public class CustomerController {
         return allOfTheDrinks.getDrinks();
     }
 
-
-@PostMapping("/drink_order")
-public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest, HttpSession session) {
+    @PostMapping("/drink_order")
+    public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrderRequest) {
 //create a new drink order and add drinks to the order
 
-    if(session.getAttribute("customerId") == null){
-        System.out.println("User must log in to create an order");
+        SessionManager.SessionInfo sessionInfo = SessionManager.global.getValidSession(drinkOrderRequest.getSessionId());
+        System.out.println("The session ID: " + drinkOrderRequest.getSessionId());
+        System.out.println("The SessionInfo: " + sessionInfo);
+        if (sessionInfo == null) {
+            throw new HttpUnauthorizedException();
+
+        } else {
+            Customer loggedInCustomer = customerRepository.findById(sessionInfo.userId);
+
+
+            ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
+            System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
+
+            DrinkOrder drinkOrder = new DrinkOrder();
+
+            drinkOrder.setCustomer(loggedInCustomer);
+            drinkOrder.setDrinkEntries(new HashSet<>(drinkOrderRequest.getDrinkEntries()));
+            drinkOrder.setStatus(Status.INITIAL);
+            drinkOrderRepository.save(drinkOrder);
+            System.out.println("This is the created drinkOrder: " + drinkOrder);
+
+
+            return drinkOrder;
+        }
     }
-
-
-    ArrayList<Drink> newDrinks = drinkOrderRequest.getDrinks();
-    System.out.println("-------------\n---------------\nThe drinks: " + newDrinks);
-
-    DrinkOrder drinkOrder = new DrinkOrder();
-
-    drinkOrder.setDrinkEntries(new HashSet<>(drinkOrderRequest.getDrinkEntries()));
-    drinkOrder.setStatus(Status.INITIAL);
-    drinkOrderRepository.save(drinkOrder);
-    System.out.println("This is the created drinkOrder: " + drinkOrder);
-
-    return drinkOrder;
-}
 
 //    @GetMapping("/timeline/{orderId}")
 //    public String drinkTimeline(@PathParam("orderId") DrinkOrder drinkOrder) {
@@ -147,4 +152,4 @@ public DrinkOrder createANewDrinkOrder(@RequestBody DrinkOrderRequest drinkOrder
 //        }
 //        return "Your Drink Order has been received by the bartender";
 //    }
-}
+ }
