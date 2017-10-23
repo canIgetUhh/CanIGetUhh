@@ -97,13 +97,14 @@ public class BartenderController {
 
         if (openOrder.getStatus() == Status.INITIAL){
             openOrder.setStatus(Status.IN_PROGRESS);
+            drinkOrderRepository.save(openOrder);
         }
-        
+
         return openOrder;
     }
 
 //    @GetMapping("/completed_orders")
-//    public List<DrinkOrder> completedOrders (DrinkOrder drinkOrder){
+//    public List<DrinkOrder> completedOrders (){
 //
 //        if (drinkOrder.getStatus() == Status.IN_PROGRESS){
 //            inProgressDrinkOrders.remove(drinkOrder);

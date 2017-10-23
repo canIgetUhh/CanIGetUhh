@@ -152,19 +152,28 @@ public class CustomerController {
         }
     }
 
-//    @GetMapping("/timeline/{orderId}")
-//    public String drinkTimeline(@PathVariable String orderId) {
-////        should change whenever bartender pushes buttons to move through the statuses
-//
-//        System.out.println(drinkOrder.getStatus());
-//        if (drinkOrder.getStatus() == Status.IN_PROGRESS) {
-//            System.out.println(drinkOrder.getStatus());
-//            return "Bartender is currently working on your drink order";
-//        }
-//        if (drinkOrder.getStatus() == Status.COMPLETE) {
-//            System.out.println(drinkOrder.getStatus());
-//            return "Bartender has completed your order! Please show your ID to the bartender";
-//        }
-//        return "Your Drink Order has been received by the bartender";
-//    }
+    @GetMapping("/timeline/{orderId}")
+    public String drinkTimeline(@PathVariable String orderId) {
+//        should change whenever bartender pushes buttons to move through the statuses
+
+        int currentOrderId = Integer.parseInt(orderId);
+        DrinkOrder drinkOrder = drinkOrderRepository.findById(currentOrderId);
+
+        System.out.println("This is the current drink order status: " + drinkOrder.getStatus());
+
+        if (drinkOrder.getStatus() == Status.COMPLETE) {
+            System.out.println(drinkOrder.getStatus());
+            return "Bartender has completed your order! Please show your ID to the bartender";
+        }
+
+        if (drinkOrder.getStatus() == Status.IN_PROGRESS) {
+            System.out.println(drinkOrder.getStatus());
+            return "Bartender is currently working on your drink order";
+        }
+
+        if (drinkOrder.getStatus() == Status.INITIAL) {
+            return "Your Drink Order has been received by the bartender";
+        }
+        throw new IllegalArgumentException();
+    }
  }
