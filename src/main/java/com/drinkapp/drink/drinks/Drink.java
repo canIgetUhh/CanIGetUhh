@@ -2,6 +2,7 @@ package com.drinkapp.drink.drinks;
 
 import com.drinkapp.drink.drinkEntry.DrinkEntry;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,7 +26,8 @@ public class Drink {
     @Column
     private String strIngredient1,strIngredient2,strIngredient3,strIngredient4,strIngredient5,strIngredient6,strIngredient7,strIngredient8,   strIngredient9,strIngredient10,strIngredient11,strIngredient12,strIngredient13,strIngredient14,strIngredient15;
 
-    @OneToMany(mappedBy = "drink")
+    @JsonIgnore
+    @OneToMany(mappedBy = "drink", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<DrinkEntry> drinkEntries;
 
     public Drink() {

@@ -5,6 +5,7 @@ import com.drinkapp.drink.barapp.Bartender;
 import com.drinkapp.drink.customerapp.Customer;
 import com.drinkapp.drink.drinkEntry.DrinkEntry;
 import com.drinkapp.drink.drinks.Drink;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,7 +29,8 @@ public class DrinkOrder {
 
     Status status;
 
-    @OneToMany(mappedBy = "drinkOrder")
+    @JsonProperty
+    @OneToMany(mappedBy = "drinkOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<DrinkEntry> drinkEntries;
 
     public DrinkOrder() {

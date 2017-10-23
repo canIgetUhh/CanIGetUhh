@@ -4,6 +4,7 @@ import com.drinkapp.drink.HttpUnauthorizedException;
 import com.drinkapp.drink.SessionManager;
 import com.drinkapp.drink.drinkEntry.DrinkEntry;
 import com.drinkapp.drink.drinkEntry.DrinkEntryRepository;
+import com.drinkapp.drink.drinks.DrinkRepository;
 import com.drinkapp.drink.requests.DrinkOrderRequest;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
@@ -29,6 +30,9 @@ public class CustomerController {
 
     @Autowired
     DrinkEntryRepository drinkEntryRepository;
+
+    @Autowired
+    DrinkRepository drinkRepository;
 
 
     String API_URL = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
@@ -132,13 +136,15 @@ public class CustomerController {
             DrinkOrder drinkOrder = new DrinkOrder();
 
             drinkOrder.setCustomer(loggedInCustomer);
-//            drinkOrderRequest.getDrinkEntries();
-//            for (DrinkEntry drinkentry: drinkOrderRequest.getDrinkEntries()) {
-//                drinkEntryRepository.save(drinkentry);
-//            }
-            drinkOrder.setDrinkEntries(new HashSet<>(drinkOrderRequest.getDrinkEntries()));
+            List<DrinkEntry> entries = drinkOrderRequest.getDrinkEntries();
+            drinkOrder.setDrinkEntries(new HashSet<>(entries));
+
             drinkOrder.setStatus(Status.INITIAL);
             drinkOrderRepository.save(drinkOrder);
+            for (DrinkEntry entry : entries) {
+                entry.setDrinkOrder(drinkOrder);
+                drinkEntryRepository.save(entry);
+            }
             System.out.println("This is the created drinkOrder: " + drinkOrder);
 
 
