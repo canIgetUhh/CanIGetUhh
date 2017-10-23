@@ -153,7 +153,7 @@ public class CustomerController {
     }
 
 //    @GetMapping("/timeline/{orderId}")
-//    public String drinkTimeline(@PathParam("orderId") DrinkOrder drinkOrder) {
+//    public String drinkTimeline(@PathVariable String orderId) {
 ////        should change whenever bartender pushes buttons to move through the statuses
 //
 //        System.out.println(drinkOrder.getStatus());
