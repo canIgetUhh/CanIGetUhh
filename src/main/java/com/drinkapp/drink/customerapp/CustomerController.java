@@ -2,6 +2,8 @@ package com.drinkapp.drink.customerapp;
 
 import com.drinkapp.drink.HttpUnauthorizedException;
 import com.drinkapp.drink.SessionManager;
+import com.drinkapp.drink.drinkEntry.DrinkEntry;
+import com.drinkapp.drink.drinkEntry.DrinkEntryRepository;
 import com.drinkapp.drink.requests.DrinkOrderRequest;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
@@ -25,14 +27,17 @@ public class CustomerController {
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
 
+    @Autowired
+    DrinkEntryRepository drinkEntryRepository;
+
 
     String API_URL = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
 
 
     @PostMapping("/login")
-    public Integer customerLogIn(@RequestBody String username, String password) {
+    public Integer customerLogIn(@RequestBody Customer customer) {
 
-        Optional<Customer> possibleCustomer = customerRepository.getByUsername(username);
+        Optional<Customer> possibleCustomer = customerRepository.getByUsername(customer.getUsername());
 
         if (!possibleCustomer.isPresent()) {
 //            return "That's not a user in our list";
@@ -41,7 +46,7 @@ public class CustomerController {
 
         Customer currentCustomer = possibleCustomer.get();
 //        boolean isCorrectPassword = BCrypt.checkpw(customer.getPassword(), currentCustomer.getPassword());
-        boolean isCorrectPassword = password.equals(currentCustomer.getPassword());
+        boolean isCorrectPassword = customer.getPassword().equals(currentCustomer.getPassword());
         if (isCorrectPassword) {
 
             Integer sessionIdNumber = SessionManager.global.createSession(currentCustomer.getId());
@@ -127,6 +132,10 @@ public class CustomerController {
             DrinkOrder drinkOrder = new DrinkOrder();
 
             drinkOrder.setCustomer(loggedInCustomer);
+//            drinkOrderRequest.getDrinkEntries();
+//            for (DrinkEntry drinkentry: drinkOrderRequest.getDrinkEntries()) {
+//                drinkEntryRepository.save(drinkentry);
+//            }
             drinkOrder.setDrinkEntries(new HashSet<>(drinkOrderRequest.getDrinkEntries()));
             drinkOrder.setStatus(Status.INITIAL);
             drinkOrderRepository.save(drinkOrder);

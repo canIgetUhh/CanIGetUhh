@@ -1,5 +1,7 @@
 package com.drinkapp.drink.barapp;
 
+import com.drinkapp.drink.HttpUnauthorizedException;
+import com.drinkapp.drink.SessionManager;
 import com.drinkapp.drink.Status;
 import com.drinkapp.drink.customerapp.CustomerRepository;
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
@@ -8,8 +10,11 @@ import com.drinkapp.drink.drinks.Drink;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/bar")
@@ -24,36 +29,33 @@ public class BartenderController {
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
 
-      List<DrinkOrder> initialDrinkOrders = new ArrayList<>();
-//
-//    List<DrinkOrder> inProgressDrinkOrders = new ArrayList<>();
+//      List<DrinkOrder> initialDrinkOrders = new ArrayList<>();
+////
+////    List<DrinkOrder> inProgressDrinkOrders = new ArrayList<>();
 //
 //    List<DrinkOrder> completedDrinkOrders = new ArrayList<>();
 
 
     @PostMapping("/login")
-    public String barLogIn (@RequestBody Bartender bartender, HttpSession session){
-
-        System.out.println(bartender.getUsername());
-        System.out.println(bartender.getPassword());
+    public Integer barLogIn (@RequestBody Bartender bartender){
 
         Optional <Bartender> findBartender = bartenderRepository.getByUsername(bartender.getUsername());
 
         if (!findBartender.isPresent()) {
-            return "That's not a user in our list";
+            throw new HttpUnauthorizedException();
         }
 
         Bartender currentBartender = findBartender.get();
 //        boolean isCorrectPassword = BCrypt.checkpw(bartender.getPassword(), findBartender.getPassword());
-        boolean isCorrectPassword = bartender.getPassword().equals(bartender.getPassword());
+        boolean isCorrectPassword = bartender.getPassword().equals(currentBartender.getPassword());
         if (isCorrectPassword){
-            session.setAttribute("bartenderId", findBartender.hashCode());
-            System.out.println(bartender);
+            Integer sessionIdNumber = SessionManager.global.createSession(currentBartender.getId());
+            System.out.println(currentBartender);
 
-            return "Bartender is successfully logged in";
+            return sessionIdNumber;
         }
 
-            return "No bartender/password combination exists in our system";
+             throw new HttpUnauthorizedException();
     }
 
     @PostMapping("/signup")
@@ -79,25 +81,24 @@ public class BartenderController {
     public List<DrinkOrder> allCurrentOrders (){
 //      get a list of all the current drinkOrders available
 
-        while (true) {
-            drinkOrderRepository.findAll();
-        }
+        List<DrinkOrder> findIntitalDrinkOrders = drinkOrderRepository.findAll();
 
+        return findIntitalDrinkOrders.stream()
+                .filter(drinkOrder -> drinkOrder.getStatus() == Status.INITIAL)
+                .collect(Collectors.toList());
     }
 
-//    @GetMapping("/current_order/{orderId}")
-//    public DrinkOrder currentOrder (DrinkOrder drinkOrder){
-////        finds a single drinkOrder with all drink items
-//
-//        DrinkOrder openOrder = drinkOrderRepository.findById(drinkOrder.getOrderId());
-//
-//        initialDrinkOrders.remove(openOrder);
-//        openOrder.setStatus(Status.IN_PROGRESS);
-//        inProgressDrinkOrders.add(openOrder);
-//        openOrder.getDrinks();
-//
-//        return openOrder;
-//    }
+    @GetMapping("/current_order/{orderId}")
+    public DrinkOrder currentOrder (@PathVariable String orderId){
+//        finds a single drinkOrder with all drink items
+
+        System.out.println(orderId);
+        int currentId = Integer.parseInt(orderId);
+        DrinkOrder openOrder = drinkOrderRepository.findById(currentId);
+
+
+        return openOrder;
+    }
 
 //    @GetMapping("/completed_orders")
 //    public DrinkOrder completedOrders (DrinkOrder drinkOrder){
