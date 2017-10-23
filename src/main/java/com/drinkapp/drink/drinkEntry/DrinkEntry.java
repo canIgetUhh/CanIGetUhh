@@ -2,6 +2,8 @@ package com.drinkapp.drink.drinkEntry;
 
 import com.drinkapp.drink.drinkOrder.DrinkOrder;
 import com.drinkapp.drink.drinks.Drink;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
@@ -19,6 +21,7 @@ public class DrinkEntry {
 
     @ManyToOne
     @JoinColumn(name = "drink_order_id")
+    @JsonIgnore
     DrinkOrder drinkOrder;
 
     int quantity;
@@ -68,8 +71,8 @@ public class DrinkEntry {
     public String toString() {
         return "DrinkEntry{" +
                 "id=" + id +
-                ", drink=" + drink +
-                ", drinkOrder=" + drinkOrder +
+                ", drink=" + drink.getStrDrink() +
+                ", drinkOrder=" + drinkOrder.getOrderId() +
                 ", quantity=" + quantity +
                 '}';
     }
