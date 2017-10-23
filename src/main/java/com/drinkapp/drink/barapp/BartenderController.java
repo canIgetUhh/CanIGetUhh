@@ -88,20 +88,23 @@ public class BartenderController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/current_order/{orderId}")
+    @GetMapping("/current_orders/{orderId}")
     public DrinkOrder currentOrder (@PathVariable String orderId){
 //        finds a single drinkOrder with all drink items
 
-        System.out.println(orderId);
         int currentId = Integer.parseInt(orderId);
         DrinkOrder openOrder = drinkOrderRepository.findById(currentId);
 
+        if (openOrder.getStatus() == Status.INITIAL){
+            openOrder.setStatus(Status.IN_PROGRESS);
+            drinkOrderRepository.save(openOrder);
+        }
 
         return openOrder;
     }
 
 //    @GetMapping("/completed_orders")
-//    public DrinkOrder completedOrders (DrinkOrder drinkOrder){
+//    public List<DrinkOrder> completedOrders (){
 //
 //        if (drinkOrder.getStatus() == Status.IN_PROGRESS){
 //            inProgressDrinkOrders.remove(drinkOrder);
