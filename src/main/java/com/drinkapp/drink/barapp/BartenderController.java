@@ -97,16 +97,16 @@ public class BartenderController {
             drinkOrderRepository.save(openOrder);
         }
 
-        JButton doneButton = new JButton("Drink Complete");
-        doneButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (openOrder.getStatus() == Status.IN_PROGRESS){
-                    openOrder.setStatus(Status.COMPLETE);
-                    drinkOrderRepository.save(openOrder);
-                }
-            }
-        });
+//        JButton doneButton = new JButton("Drink Complete");
+//        doneButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if (openOrder.getStatus() == Status.IN_PROGRESS){
+//                    openOrder.setStatus(Status.COMPLETE);
+//                    drinkOrderRepository.save(openOrder);
+//                }
+//            }
+//        });
 
 
         return openOrder;
