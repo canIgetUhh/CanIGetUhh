@@ -139,6 +139,13 @@ public class CustomerController {
             List<DrinkEntry> entries = drinkOrderRequest.getDrinkEntries();
             drinkOrder.setDrinkEntries(new HashSet<>(entries));
 
+            for (DrinkEntry entry : entries) {
+                Drink existingDrink = drinkRepository.getByIdDrink(entry.getDrink().getIdDrink());
+                if (existingDrink != null) {
+                    entry.setDrink(existingDrink);
+                }
+            }
+            
             drinkOrder.setStatus(Status.INITIAL);
             drinkOrderRepository.save(drinkOrder);
             for (DrinkEntry entry : entries) {

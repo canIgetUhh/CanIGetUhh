@@ -15,11 +15,11 @@ public class DrinkEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_drink")
     Drink drink;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "drink_order_id")
     @JsonIgnore
     DrinkOrder drinkOrder;
