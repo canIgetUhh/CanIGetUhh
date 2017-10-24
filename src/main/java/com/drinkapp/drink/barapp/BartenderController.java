@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpSession;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -28,12 +31,6 @@ public class BartenderController {
 
     @Autowired
     DrinkOrderRepository drinkOrderRepository;
-
-//      List<DrinkOrder> initialDrinkOrders = new ArrayList<>();
-////
-////    List<DrinkOrder> inProgressDrinkOrders = new ArrayList<>();
-//
-//    List<DrinkOrder> completedDrinkOrders = new ArrayList<>();
 
 
     @PostMapping("/login")
@@ -100,17 +97,28 @@ public class BartenderController {
             drinkOrderRepository.save(openOrder);
         }
 
+        JButton doneButton = new JButton("Drink Complete");
+        doneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (openOrder.getStatus() == Status.IN_PROGRESS){
+                    openOrder.setStatus(Status.COMPLETE);
+                    drinkOrderRepository.save(openOrder);
+                }
+            }
+        });
+
+
         return openOrder;
     }
 
-//    @GetMapping("/completed_orders")
-//    public List<DrinkOrder> completedOrders (){
-//
-//        if (drinkOrder.getStatus() == Status.IN_PROGRESS){
-//            inProgressDrinkOrders.remove(drinkOrder);
-//            drinkOrder.setStatus(Status.COMPLETE);
-//            completedDrinkOrders.add(drinkOrder);
-//        }
-//        return drinkOrder;
-//    }
+    @GetMapping("/completed_orders")
+    public List<DrinkOrder> completedOrders (){
+
+       List<DrinkOrder> findCompletedDrinkOrders = drinkOrderRepository.findAll();
+
+        return findCompletedDrinkOrders.stream()
+                .filter(drinkOrder -> drinkOrder.getStatus() == Status.COMPLETE)
+                .collect(Collectors.toList());
+    }
 }

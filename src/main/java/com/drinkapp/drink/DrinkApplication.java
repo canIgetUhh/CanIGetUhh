@@ -25,7 +25,6 @@ public class DrinkApplication {
 //        System.out.println(allOfTheDrinks);
 
         System.out.println(allOfTheDrinks);
-        System.out.println(allOfTheDrinks.getDrinks().get(0).getStrDrink());
 
 
         return "done";

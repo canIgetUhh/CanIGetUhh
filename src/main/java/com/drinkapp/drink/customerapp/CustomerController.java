@@ -89,7 +89,7 @@ public class CustomerController {
         return "new Customer was created";
     }
 
-    @GetMapping("/view_all_drinks")
+    @GetMapping("/drink_menu")
     public List<Drink> viewAllDrinks() {
 //        show the list of all drinks in the database
 
@@ -102,12 +102,12 @@ public class CustomerController {
         return allOfTheDrinks.getDrinks();
     }
 
-    @GetMapping("/drink_menu")
-    public List<Drink> searchForDrinkName() {
+    @GetMapping("/drink_menu/{name_of_drink}")
+    public List<Drink> searchForDrinkName(@PathVariable String name_of_drink) {
         //Search using the search bar to find what kind of drink you want to order
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = API_URL + "Mojito";
+        String url = API_URL + name_of_drink;
 
         AllOfTheDrinks allOfTheDrinks = restTemplate.getForObject(url, AllOfTheDrinks.class);
 
@@ -159,7 +159,7 @@ public class CustomerController {
         int currentOrderId = Integer.parseInt(orderId);
         DrinkOrder drinkOrder = drinkOrderRepository.findById(currentOrderId);
 
-        System.out.println("This is the current drink order status: " + drinkOrder.getStatus());
+        System.out.println("This is the current status of drink order: " + drinkOrder.getStatus());
 
         if (drinkOrder.getStatus() == Status.COMPLETE) {
             System.out.println(drinkOrder.getStatus());
