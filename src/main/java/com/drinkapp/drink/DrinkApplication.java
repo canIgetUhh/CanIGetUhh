@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class DrinkApplication {
 
-    static final String API_URL = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
+    static final String API_URL = "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
 
 	public static void main(String[] args) {
 		SpringApplication.run(DrinkApplication.class, args);
