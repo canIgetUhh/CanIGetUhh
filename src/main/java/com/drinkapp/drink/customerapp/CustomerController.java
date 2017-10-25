@@ -35,7 +35,7 @@ public class CustomerController {
     DrinkRepository drinkRepository;
 
 
-    String API_URL = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
+    String API_URL = "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
 
 
     @PostMapping("/login")
@@ -145,7 +145,7 @@ public class CustomerController {
                     entry.setDrink(existingDrink);
                 }
             }
-            
+
             drinkOrder.setStatus(Status.INITIAL);
             drinkOrderRepository.save(drinkOrder);
             for (DrinkEntry entry : entries) {
