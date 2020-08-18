@@ -12,6 +12,7 @@ public class Bartender {
     @Column(unique = true, name = "username")
     public String username;
 
+
     @Column
     public String password;
 

@@ -52,7 +52,8 @@ public class SessionManager {
         }
     }
 
-    public boolean sessionIsValid(int sessionId) {
+    public boolean sessionIsValid( int sessionId
+                                  ) {
         return getValidSession(sessionId) != null;
     }
 
